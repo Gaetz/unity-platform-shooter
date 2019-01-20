@@ -50,14 +50,20 @@ public class RaycastEngine : MonoBehaviour {
 	[Tooltip("Period the player is allowed to press jump button before the actual jump")]
 	[SerializeField] float jumpInputLeewayPeriod;
 
-
 	float jumpStartTimer;
 	float jumpHoldTimer;
 	bool jumpInputDown;
 	JumpState jumpState;
+	bool lastGrounded;
 
+	Animator animator;
+	SpriteRenderer spriteRenderer;
+
+	[SerializeField] AudioSource jumpSfx, landSfx, startMoveSfx;
 
 	void Start () {
+		animator = GetComponent<Animator>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 		raycastDown = new RaycastMoveDirection(
 			platformMask, new Vector2(-0.2f, -0.3f), new Vector2(0.2f, -0.3f), Vector2.down,
 			Vector2.right * perpendicularInsetLen, Vector2.up * parallelInsetLen
@@ -92,13 +98,20 @@ public class RaycastEngine : MonoBehaviour {
 	void FixedUpdate () {
 
 		// Jump
+		bool grounded = groundDown.Cast(transform.position);
+		if (grounded && !lastGrounded) {
+			landSfx.Play();
+		}
+		lastGrounded = grounded;
+
 		switch(jumpState) {
 			case JumpState.None:
-				if (groundDown.Cast(transform.position) && jumpStartTimer > 0) {
+				if (grounded && jumpStartTimer > 0) {
 					jumpStartTimer = 0;
 					jumpHoldTimer = 0;
 					jumpState = JumpState.Holding;
 					velocity.y = jumpStartSpeed;
+					jumpSfx.Play();
 				}
 				break;
 			case JumpState.Holding:
@@ -119,6 +132,7 @@ public class RaycastEngine : MonoBehaviour {
 		if (wantedDirection != 0) {
 			if (wantedDirection != velocityDirection) {
 				velocity.x = xSnapSpeed * wantedDirection;
+				startMoveSfx.Play();
 			}	else {
 				velocity.x = Mathf.MoveTowards(velocity.x, xMaxSpeed * wantedDirection, xAccel * Time.deltaTime);
 			}
@@ -131,6 +145,7 @@ public class RaycastEngine : MonoBehaviour {
 		if(jumpState == JumpState.None) {
 			velocity.y -= gravity * Time.deltaTime;
 		}
+
 
 		// Move
 		Vector2 move = Vector2.zero;
@@ -156,6 +171,28 @@ public class RaycastEngine : MonoBehaviour {
 		}
 
 		transform.Translate(move);
+
+		// Animations 
+		if(jumpState == JumpState.Holding) {
+			animator.Play("Jump");
+		} else {
+			if (grounded) {
+				if(wantedDirection == 0) {
+					animator.Play("Idle");
+				} else {
+					animator.Play("Move");
+				}
+			} else {
+				if (velocity.y < 0) {
+					animator.Play("Fall");
+				} else {
+					animator.Play("Jump");
+				}
+			}
+		}
+		if (wantedDirection != 0) {
+			spriteRenderer.flipX = wantedDirection < 0;
+		}
 	}
 
 	int GetSign(float v) {
