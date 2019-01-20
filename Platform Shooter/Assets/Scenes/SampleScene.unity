@@ -387,12 +387,15 @@ MonoBehaviour:
   platformMask:
     serializedVersion: 2
     m_Bits: 512
-  parallelInsetLen: 0.05
-  perpendicularInsetLen: 0.05
-  groundTestLen: 0.05
-  gravity: 9.8
-  xAccel: 4
-  xMaxSpeed: 25
+  gravity: 40
+  xAccel: 10
+  xDecel: 40
+  xMaxSpeed: 8
+  xSnapSpeed: 3
+  jumpStartSpeed: 8
+  jumpMaxHoldPeriod: 0.2
+  jumpMinSpeed: 2
+  jumpInputLeewayPeriod: 0.15
 --- !u!50 &1533096133
 Rigidbody2D:
   serializedVersion: 4
