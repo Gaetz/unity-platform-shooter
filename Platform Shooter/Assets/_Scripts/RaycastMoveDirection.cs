@@ -32,7 +32,12 @@ public class RaycastMoveDirection {
 		foreach(var offset in offsetPoints) {
 			RaycastHit2D hit = Raycast(origin + offset, direction, distance + addLength, layerMask);
 			if(hit.collider != null) {
-				minDistance = Mathf.Min(minDistance, hit.distance - addLength);
+				// Ignore collision if going in the right direction for a ThroughPlatform
+				// else collide
+				ThroughPlatform tp = hit.collider.GetComponent<ThroughPlatform>();
+				if(tp == null || tp.permitDirection != direction) {
+					minDistance = Mathf.Min(minDistance, hit.distance - addLength);
+				}
 			}
 		}
 		return minDistance;
