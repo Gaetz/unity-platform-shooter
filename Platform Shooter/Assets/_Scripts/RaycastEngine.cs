@@ -27,9 +27,10 @@ public class RaycastEngine : MonoBehaviour {
 	[SerializeField] float xSnapSpeed;
 
 	Vector2 velocity;
-	float parallelInsetLen = 0.05f;
-	float perpendicularInsetLen = 0.05f;
-	float groundTestLen = 0.05f;
+	const float parallelInsetLen = 0.05f;
+	const float perpendicularInsetLen = 0.05f;
+	const float groundTestLen = 0.05f;
+	const float skinLen = 0.0005f;
 
 	RaycastMoveDirection raycastDown;
 	RaycastMoveDirection raycastLeft;
@@ -58,27 +59,29 @@ public class RaycastEngine : MonoBehaviour {
 
 	Animator animator;
 	SpriteRenderer spriteRenderer;
+	BoxCollider2D boxCollider;
 
 	[SerializeField] AudioSource jumpSfx, landSfx, startMoveSfx;
 
 	void Start () {
 		animator = GetComponent<Animator>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		boxCollider = GetComponent<BoxCollider2D>();
 		raycastDown = new RaycastMoveDirection(
 			platformMask, new Vector2(-0.2f, -0.3f), new Vector2(0.2f, -0.3f), Vector2.down,
-			Vector2.right * perpendicularInsetLen, Vector2.up * parallelInsetLen
+			boxCollider.bounds, skinLen
 		);
 		raycastLeft = new RaycastMoveDirection(
 			platformMask, new Vector2(-0.2f, -0.3f), new Vector2(-0.2f, 0.3f), Vector2.left,
-			Vector2.up * perpendicularInsetLen, Vector2.right * parallelInsetLen
+			boxCollider.bounds, skinLen
 		);
 		raycastRight = new RaycastMoveDirection(
 			platformMask, new Vector2(0.2f, -0.3f), new Vector2(0.2f, 0.3f), Vector2.right,
-			Vector2.up * perpendicularInsetLen, Vector2.left * parallelInsetLen
+			boxCollider.bounds, skinLen
 		);
 		raycastUp = new RaycastMoveDirection(
 			platformMask, new Vector2(-0.2f, 0.3f), new Vector2(0.2f, 0.3f), Vector2.up,
-			Vector2.right * perpendicularInsetLen, Vector2.down * parallelInsetLen
+			boxCollider.bounds, skinLen
 		);
 		groundDown = new RaycastCheckTouch(
 			platformMask, new Vector2(-0.2f, -0.3f), new Vector2(0.2f, -0.3f), Vector2.down,
