@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be19bf888711a9499ab2713a1813d2d, type: 3}
+  m_Name: PlayerMove
+  m_EditorClassIdentifier: 
+  platformMask:
+    serializedVersion: 2
+    m_Bits: 512
+  gravity: 2
+  maxFallSpeed: 20
+  xAccel: 20
+  xDecel: 40
+  xMaxSpeed: 10
+  xSnapSpeed: 2.5
+  jumpStartSpeed: 8
+  jumpMaxHoldPeriod: 0.2
+  jumpMinSpeed: 8
+  jumpInputLeewayPeriod: 0.15
