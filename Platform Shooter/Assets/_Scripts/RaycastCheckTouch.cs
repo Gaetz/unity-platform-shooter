@@ -10,7 +10,9 @@ public class RaycastCheckTouch {
 	float raycastLen;
 	RaycastState state;
 
-	public RaycastCheckTouch(LayerMask layerMask, Vector2 start, Vector2 end, Vector2 direction, Vector2 perpendicularInset, Vector2 parallelInset, float checkLength, RaycastState state) {
+	public RaycastCheckTouch(LayerMask layerMask, Vector2 start, Vector2 end, 
+			Vector2 direction, Vector2 perpendicularInset, Vector2 parallelInset, float checkLength, RaycastState state) 
+	{
 		this.layerMask = layerMask;
 		this.direction = direction;
 		offsetPoints = new Vector2[] {

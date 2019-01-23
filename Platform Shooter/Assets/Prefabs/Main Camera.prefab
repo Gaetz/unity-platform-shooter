@@ -190,7 +190,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 0e686cf55449e674aa4dad91921d733b, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -285,7 +285,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 4da54c382fbe1c345815d6ff686390d4, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -380,7 +380,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 65081ca4826d7644eb0f83f560984e42, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -478,6 +478,6 @@ MonoBehaviour:
   target: {fileID: 0}
   focusAreaSize: {x: 3, y: 5}
   verticalOffset: -1
-  lookAheadDistX: 1
-  lookSmoothTimeX: 0.2
+  lookAheadDistX: 2
+  HorizontalSmoothTime: 0.2
   verticalSmoothTime: 0.2

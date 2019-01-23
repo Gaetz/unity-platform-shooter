@@ -237,5 +237,6 @@ public class RaycastController : MonoBehaviour {
 
 	void LateUpdate() {
 		transform.Translate(move);
+		
 	}
 }
