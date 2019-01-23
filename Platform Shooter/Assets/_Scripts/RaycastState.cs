@@ -19,4 +19,7 @@
 	public bool Falling { get { return falling; } set { falling = value; } }
 	bool falling;
 
+	public MovingPlatform MovingPlatform { get { return movingPlatform; } set { movingPlatform = value; } }
+	MovingPlatform movingPlatform;
+
 }

@@ -8,8 +8,9 @@ public class RaycastCheckTouch {
 	Vector2 direction;
 	Vector2[] offsetPoints;
 	float raycastLen;
+	RaycastState state;
 
-	public RaycastCheckTouch(LayerMask layerMask, Vector2 start, Vector2 end, Vector2 direction, Vector2 perpendicularInset, Vector2 parallelInset, float checkLength) {
+	public RaycastCheckTouch(LayerMask layerMask, Vector2 start, Vector2 end, Vector2 direction, Vector2 perpendicularInset, Vector2 parallelInset, float checkLength, RaycastState state) {
 		this.layerMask = layerMask;
 		this.direction = direction;
 		offsetPoints = new Vector2[] {
@@ -17,6 +18,7 @@ public class RaycastCheckTouch {
 			end + parallelInset - perpendicularInset
 		};
 		raycastLen = parallelInset.magnitude + checkLength;
+		this.state = state;
 	}
 
 	private RaycastHit2D Raycast(Vector2 start, Vector2 direction, float length, LayerMask layerMask) {
@@ -25,12 +27,17 @@ public class RaycastCheckTouch {
 	}
 
 	public bool Cast(Vector2 origin) {
+		MovingPlatform hitMovingPlatform = null;
+		bool hitSomething = false;
 		foreach(var offset in offsetPoints) {
 			RaycastHit2D hit = Raycast(origin + offset, direction, raycastLen, layerMask);
 			if(hit.collider != null) {
-				return true;
+				hitMovingPlatform = hit.collider.GetComponent<MovingPlatform>();
+				hitSomething =  true;
 			}
 		}
-		return false;
+		if(hitMovingPlatform)
+			state.MovingPlatform = hitMovingPlatform;
+		return hitSomething;
 	}
 }

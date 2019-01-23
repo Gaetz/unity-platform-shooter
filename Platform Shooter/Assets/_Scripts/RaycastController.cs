@@ -33,6 +33,8 @@ public class RaycastController : MonoBehaviour {
 
 	Animator animator;
 	SpriteRenderer spriteRenderer;
+
+	public BoxCollider2D Collider { get { return boxCollider; } private set {} }
 	BoxCollider2D boxCollider;
 	Rect box;
 
@@ -41,12 +43,17 @@ public class RaycastController : MonoBehaviour {
 
 	[SerializeField] AudioSource jumpSfx, landSfx, startMoveSfx;
 
-	void Start () {
+	float inputX, inputY;
+	public Vector2 PlayerInput { get { return new Vector2(inputX, inputY); } }
+
+	void Awake() {
 		animator = GetComponent<Animator>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		boxCollider = GetComponent<BoxCollider2D>();
 		state = new RaycastState();
+	}
 
+	void Start () {
 		raycastDown = new RaycastVerticalDirection(moveData.platformMask, Vector2.down, DataAccess.Instance.EngineMoveData.margin, state);
 		raycastLeft = new RaycastHorizontalDirection(moveData.platformMask, Vector2.left, DataAccess.Instance.EngineMoveData.margin, state);
 		raycastRight = new RaycastHorizontalDirection(moveData.platformMask, Vector2.right, DataAccess.Instance.EngineMoveData.margin, state);
@@ -54,7 +61,7 @@ public class RaycastController : MonoBehaviour {
 
 		groundDown = new RaycastCheckTouch(
 			moveData.platformMask, new Vector2(-0.2f, -0.3f), new Vector2(0.2f, -0.3f), Vector2.down,
-			Vector2.right * perpendicularInsetLen, Vector2.up * parallelInsetLen, groundMargin
+			Vector2.right * perpendicularInsetLen, Vector2.up * parallelInsetLen, groundMargin, state
 		);
 
 	}
@@ -68,7 +75,31 @@ public class RaycastController : MonoBehaviour {
 		jumpInputDown = jumpButton;
 	}
 	
-	void FixedUpdate () {
+	void FixedUpdate() {
+		Reset();
+		CheckGround();
+		HandleJumpInput();
+
+		// Input
+		inputX = Input.GetAxisRaw("Horizontal");
+		inputY = Input.GetAxisRaw("Vertical");
+		int wantedDirectionX = GetSign(inputX);
+		int velocityDirection = GetSign(velocity.x);
+
+		HandleHorizontalVelocity(wantedDirectionX, velocityDirection);
+		HandleGravity();
+		HandleMovingPlatform();
+
+		// Move
+		move = Vector2.zero;
+		Vector2 wantedMove = velocity * Time.deltaTime;
+		HandleMove(wantedMove);
+
+		CancelVelocity(ref velocity, move, wantedMove);
+		HandleAnimation(wantedDirectionX);
+	}
+
+	void Reset() {
 		box = new Rect(
 			boxCollider.bounds.min.x,
 			boxCollider.bounds.min.y,
@@ -79,15 +110,20 @@ public class RaycastController : MonoBehaviour {
 		raycastUp.UpdateOrigin(box);
 		raycastLeft.UpdateOrigin(box);
 		raycastRight.UpdateOrigin(box);
+		state.MovingPlatform = null;
+	}
 
-		// Jump
+	void CheckGround() {
+		// Jump and moving platform
 		state.Grounded = groundDown.Cast(transform.position);
 		if (state.Grounded && !lastGrounded) {
 			landSfx.Play();
 			state.Falling = false;
 		}
 		lastGrounded = state.Grounded;
+	}
 
+	void HandleJumpInput() {
 		switch(jumpState) {
 			case JumpState.None:
 				if (state.Grounded && jumpStartTimer > 0) {
@@ -106,39 +142,38 @@ public class RaycastController : MonoBehaviour {
 				}
 				break;
 		}
+	}
 
-		// Left and right
-		float xInput = Input.GetAxisRaw("Horizontal");
-		int wantedDirection = GetSign(xInput);
-		int velocityDirection = GetSign(velocity.x);
-
+	void HandleHorizontalVelocity(int wantedDirectionX, int velocityDirection) {
 		// Handle direction change
-		if (wantedDirection != 0) {
-			if (wantedDirection != velocityDirection) {
-				velocity.x = moveData.xSnapSpeed * wantedDirection;
+		if (wantedDirectionX != 0) {
+			if (wantedDirectionX != velocityDirection) {
+				velocity.x = moveData.xSnapSpeed * wantedDirectionX;
 				startMoveSfx.Play();
 			}	else {
-				velocity.x = Mathf.MoveTowards(velocity.x, moveData.xMaxSpeed * wantedDirection, moveData.xAccel * Time.deltaTime);
+				velocity.x = Mathf.MoveTowards(velocity.x, moveData.xMaxSpeed * wantedDirectionX, moveData.xAccel * Time.deltaTime);
 			}
 		} else {
 			velocity.x = Mathf.MoveTowards(velocity.x, 0, moveData.xDecel * Time.deltaTime);
 		}
+	}
 
-
-		// Gravity
+	void HandleGravity() {
 		if(jumpState == JumpState.None) {
 			velocity.y = Mathf.Max(velocity.y - moveData.gravity, -moveData.maxFallSpeed); // Negative, so we use max
 		}
 		if (velocity.y < 0  && !state.Grounded) {
 			state.Falling = true;
 		}
+	}
 
+	void HandleMovingPlatform() {
+		if (state.MovingPlatform != null) {
+			transform.Translate(state.MovingPlatform.Velocity);
+		}
+	}
 
-		// Move
-		move = Vector2.zero;
-		Vector2 wantedMove = velocity * Time.deltaTime;
-
-
+	void HandleMove(Vector2 wantedMove) {
 		if (velocity.y > 0) {
 			raycastUp.Cast(transform.position, wantedMove.y, ref move);
 		} else if (velocity.y < 0) {
@@ -155,22 +190,24 @@ public class RaycastController : MonoBehaviour {
 			state.Descending = false;
 			state.Falling = false;
 		}
-		
+	}
 
+	void CancelVelocity(ref Vector2 velocity, Vector2 move, Vector2 wantedMove) {
 		if (!Mathf.Approximately(wantedMove.x, move.x)) {
 			velocity.x = 0;
 		}
 		if (!Mathf.Approximately(wantedMove.y, move.y)) {
 			velocity.y = 0;
 		}
+	}
 
-
+	void HandleAnimation(float wantedDirectionX) {
 		// Animations 
 		if(jumpState == JumpState.Holding) {
 			animator.Play("Jump");
 		} else {
 			if (state.Grounded) {
-				if(wantedDirection == 0) {
+				if(wantedDirectionX == 0) {
 					animator.Play("Idle");
 				} else {
 					animator.Play("Move");
@@ -183,10 +220,9 @@ public class RaycastController : MonoBehaviour {
 				}
 			}
 		}
-		if (wantedDirection != 0) {
-			spriteRenderer.flipX = wantedDirection < 0;
+		if (wantedDirectionX != 0) {
+			spriteRenderer.flipX = wantedDirectionX < 0;
 		}
-
 	}
 
 	int GetSign(float v) {

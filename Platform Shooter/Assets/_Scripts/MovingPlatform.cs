@@ -7,6 +7,9 @@ public class MovingPlatform : MonoBehaviour {
 	[SerializeField] float speed;
 	[SerializeField] Transform[] waypoints;
 
+	public Vector2 Velocity { get { return velocity; } private set {} }
+	Vector2 velocity;
+
 	int currentWp;
 	int NextWp {
 		get {
@@ -20,7 +23,7 @@ public class MovingPlatform : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-		Vector2 velocity = (waypoints[currentWp].position - transform.position).normalized * speed * Time.deltaTime;
+		velocity = (waypoints[currentWp].position - transform.position).normalized * speed * Time.deltaTime;
 		// Reach next node
 		if((transform.position - waypoints[currentWp].position).magnitude <= speed * Time.deltaTime) {
 			velocity = Vector2.ClampMagnitude(velocity, (waypoints[currentWp].position - transform.position).magnitude);
