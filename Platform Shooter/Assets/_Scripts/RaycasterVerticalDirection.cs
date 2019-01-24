@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastVerticalDirection : RaycastMoveDirection {
+public class RaycasterVerticalDirection : RaycasterMoveDirection {
 
 	float maxSlopeDescendingAngle;
 
-	public RaycastVerticalDirection(LayerMask layerMask, Vector2 direction, float margin, RaycastState state)
+	public RaycasterVerticalDirection(LayerMask layerMask, Vector2 direction, float margin, RaycastState state)
 	: base(layerMask, direction, margin, state) {
 			maxSlopeDescendingAngle = DataAccess.Instance.EngineMoveData.MaxSlopeDescend;
 		}
@@ -44,6 +44,8 @@ public class RaycastVerticalDirection : RaycastMoveDirection {
 		
 		// Descending slope
 		if (slopeAngle > 0 && slopeAngle < maxSlopeDescendingAngle) {
+			state.Descending = true;
+			state.Falling = false;
 			float rayDirectionX = Mathf.Sign(horizDistance);
 			if (Mathf.Sign(slopeHit.normal.x) == rayDirectionX) {
 				float yMove = Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(horizDistance);
@@ -54,8 +56,6 @@ public class RaycastVerticalDirection : RaycastMoveDirection {
 					float horizontalSpeedMultiplier = moveDistance / descendVelocityX;
 					move.x = descendVelocityX * Mathf.Sign(horizDistance) * horizontalSpeedMultiplier;
 					move.y -= slopeEnd ? minDistance : descendVelocityY * horizontalSpeedMultiplier;
-					state.Descending = true;
-					state.Falling = false;
 				}
 			}
 		} 

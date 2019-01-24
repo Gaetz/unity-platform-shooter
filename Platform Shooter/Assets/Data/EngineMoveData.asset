@@ -17,3 +17,4 @@ MonoBehaviour:
   horizontalRays: 6
   verticalRays: 4
   margin: 0.05
+  throughFloorMargin: 0.008

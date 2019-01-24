@@ -20,7 +20,7 @@ MonoBehaviour:
   xDecel: 40
   xMaxSpeed: 10
   xSnapSpeed: 2.5
-  jumpStartSpeed: 8
+  jumpStartSpeed: 16
   jumpMaxHoldPeriod: 0.2
   jumpMinSpeed: 8
   jumpInputLeewayPeriod: 0.15

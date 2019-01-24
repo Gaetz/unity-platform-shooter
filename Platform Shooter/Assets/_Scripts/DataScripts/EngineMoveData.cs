@@ -22,4 +22,7 @@ public class EngineMoveData : ScriptableObject {
 
 	[Tooltip("Rays origin margin inside the collider")]
 	public float margin;
+
+	[Tooltip("When a controller go into the floor, his position is fixed with a little margin")]
+	public float throughFloorMargin;
 }

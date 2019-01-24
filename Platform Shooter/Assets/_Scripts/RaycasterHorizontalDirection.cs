@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastHorizontalDirection : RaycastMoveDirection {
+public class RaycasterHorizontalDirection : RaycasterMoveDirection {
 
 	float maxSlopeAngle;
 	float noSlowSlopeAngle;
 
-	public RaycastHorizontalDirection(LayerMask layerMask, Vector2 direction, float margin, RaycastState state)
+	public RaycasterHorizontalDirection(LayerMask layerMask, Vector2 direction, float margin, RaycastState state)
 	: base(layerMask, direction, margin, state)
 	{
 		maxSlopeAngle = DataAccess.Instance.EngineMoveData.MaxSlopeClimb;
@@ -26,6 +26,7 @@ public class RaycastHorizontalDirection : RaycastMoveDirection {
 		}
 		if (slopeAngle > 0 && slopeAngle < maxSlopeAngle) {
 			if(state.Descending) state.Descending = false;
+			state.Climbing = true;
 			ClimbSlope(ref move, slopeAngle, distance, slopeAngle >= noSlowSlopeAngle);
 		} else {
 			state.Climbing = false;
@@ -38,7 +39,6 @@ public class RaycastHorizontalDirection : RaycastMoveDirection {
 		float climbVelocityY = Mathf.Sin(Mathf.Deg2Rad * slopeAngle) * distance;
 		float bonusSpeedMult = slow? 1 : distance / climbVelocityX;
 		if(move.y <= climbVelocityY) {
-			state.Climbing = true;
 			move.x = climbVelocityX * direction.x * bonusSpeedMult;
 			move.y = climbVelocityY * bonusSpeedMult;
 		}

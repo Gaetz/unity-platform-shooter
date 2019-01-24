@@ -17,12 +17,12 @@ public class RaycastController : MonoBehaviour {
 	const float perpendicularInsetLen = 0.05f;
 	const float groundMargin = 0.05f;
 
-	RaycastVerticalDirection raycastDown;
-	RaycastHorizontalDirection raycastLeft;
-	RaycastHorizontalDirection raycastRight;
-	RaycastVerticalDirection raycastUp;
+	RaycasterVerticalDirection raycastDown;
+	RaycasterHorizontalDirection raycastLeft;
+	RaycasterHorizontalDirection raycastRight;
+	RaycasterVerticalDirection raycastUp;
 
-	RaycastCheckTouch groundDown;
+	RaycasterCheckTouch groundDown;
 
 	float jumpStartTimer;
 	float jumpHoldTimer;
@@ -54,15 +54,12 @@ public class RaycastController : MonoBehaviour {
 	}
 
 	void Start () {
-		raycastDown = new RaycastVerticalDirection(moveData.platformMask, Vector2.down, DataAccess.Instance.EngineMoveData.margin, state);
-		raycastLeft = new RaycastHorizontalDirection(moveData.platformMask, Vector2.left, DataAccess.Instance.EngineMoveData.margin, state);
-		raycastRight = new RaycastHorizontalDirection(moveData.platformMask, Vector2.right, DataAccess.Instance.EngineMoveData.margin, state);
-		raycastUp = new RaycastVerticalDirection(moveData.platformMask, Vector2.up, DataAccess.Instance.EngineMoveData.margin, state);
+		raycastDown = new RaycasterVerticalDirection(moveData.platformMask, Vector2.down, DataAccess.Instance.EngineMoveData.margin, state);
+		raycastLeft = new RaycasterHorizontalDirection(moveData.platformMask, Vector2.left, DataAccess.Instance.EngineMoveData.margin, state);
+		raycastRight = new RaycasterHorizontalDirection(moveData.platformMask, Vector2.right, DataAccess.Instance.EngineMoveData.margin, state);
+		raycastUp = new RaycasterVerticalDirection(moveData.platformMask, Vector2.up, DataAccess.Instance.EngineMoveData.margin, state);
 
-		groundDown = new RaycastCheckTouch(
-			moveData.platformMask, new Vector2(-0.2f, -0.3f), new Vector2(0.2f, -0.3f), Vector2.down,
-			Vector2.right * perpendicularInsetLen, Vector2.up * parallelInsetLen, groundMargin, state
-		);
+		groundDown = new RaycasterCheckTouch(moveData.platformMask, Vector2.down,	groundMargin, state);
 
 	}
 
@@ -77,7 +74,7 @@ public class RaycastController : MonoBehaviour {
 	
 	void FixedUpdate() {
 		Reset();
-		CheckGround();
+		CheckGround(box);
 		HandleJumpInput();
 
 		// Input
@@ -110,12 +107,13 @@ public class RaycastController : MonoBehaviour {
 		raycastUp.UpdateOrigin(box);
 		raycastLeft.UpdateOrigin(box);
 		raycastRight.UpdateOrigin(box);
+		groundDown.UpdateOrigin(box);
 		state.MovingPlatform = null;
 	}
 
-	void CheckGround() {
+	void CheckGround(Rect box) {
 		// Jump and moving platform
-		state.Grounded = groundDown.Cast(transform.position);
+		state.Grounded = groundDown.Cast(transform.position, box) <= DataAccess.Instance.EngineMoveData.throughFloorMargin * 2;
 		if (state.Grounded && !lastGrounded) {
 			landSfx.Play();
 			state.Falling = false;
@@ -237,6 +235,20 @@ public class RaycastController : MonoBehaviour {
 
 	void LateUpdate() {
 		transform.Translate(move);
-		
+		FixPosition();
+	}
+
+	void FixPosition() {
+		box = new Rect(
+			boxCollider.bounds.min.x,
+			boxCollider.bounds.min.y,
+			boxCollider.bounds.size.x,
+			boxCollider.bounds.size.y
+		);
+		groundDown.UpdateOrigin(box);
+		float floorDistance = groundDown.Cast(transform.position, box);
+		if(floorDistance < 0 && !state.Climbing && !state.Descending) {
+			transform.Translate(new Vector2(0, -floorDistance + DataAccess.Instance.EngineMoveData.throughFloorMargin));
+		}
 	}
 }
