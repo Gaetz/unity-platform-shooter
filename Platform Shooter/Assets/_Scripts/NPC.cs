@@ -4,37 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class NPC : MonoBehaviour {
+
+	[Tooltip("Space between NPC and dialog window")]
 	[SerializeField] float dialogAbovePosition;
+
+	[Tooltip("Link toward the dialog background panel")]
 	[SerializeField] Transform ChatBackground;
-	//[SerializeField] Transform NpcCharacter;
+
+	[Tooltip("Text content, one text per dialog box")]
 	[SerializeField][TextArea(5, 10)] string[] sentences;
 	DialogSystem dialogSystem;
 	
+	bool isDialogDisplayed;
 
-	// Use this for initialization
 	void Start () {
 		dialogSystem = FindObjectOfType<DialogSystem>();
-				//enabled = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
-		pos.y += dialogAbovePosition;
-		ChatBackground.position = pos;
+		isDialogDisplayed = false;
 	}
 
 	public void OnTriggerStay2D(Collider2D other) {
-		if(other.gameObject.tag == "Player") {
-			dialogSystem.EnterRangeOfNPC();
-			enabled = true;
-			dialogSystem.dialogLines = sentences;
-			dialogSystem.TriggerDialog();
+		if (!isDialogDisplayed && other.gameObject.tag == "Player") {
+				isDialogDisplayed = true;
+				Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
+				pos.y += dialogAbovePosition;
+				ChatBackground.position = pos;
+				dialogSystem.EnterRangeOfNPC();
+				dialogSystem.dialogLines = sentences;
+				dialogSystem.TriggerDialog();
 		}
 	}
 
 	public void OnTriggerExit2D(Collider2D other) {
 		dialogSystem.OutOfRange();
-		enabled = false;
+		isDialogDisplayed = false;
 	}
 }

@@ -5,25 +5,28 @@ using UnityEngine.UI;
 
 public class DialogSystem : MonoBehaviour {
 
+	[Tooltip("Link to dialog text")]
 	[SerializeField] Text dialogText;
+
+	[Tooltip("Link to dialog canvas")]
 	[SerializeField] GameObject dialogGUI;
+
+	[Tooltip("Link to dialog background box")]
 	[SerializeField] Transform dialogBoxGUI;
 
-	[SerializeField] float letterDelay = 0.1f;
-	[SerializeField] float letterMultiplier = 0.5f;
+	[Tooltip("Default time between letter")]
+	[SerializeField] float letterDelay = 0.025f;
+
+	[Tooltip("Time between letter when dialog input (Return by default) is pressed")]
+	[SerializeField] float letterMultiplier = 0.005f;
+
+	[Tooltip("Dialog input key")]
 	[SerializeField] KeyCode dialogInput = KeyCode.Return;
 	public string[] dialogLines;
 
-	public bool IsLetterMultiplied { get { return isLetterMultiplied; } set { isLetterMultiplied = value; } }
-	public bool isLetterMultiplied = false;
-
-	public bool DialogActive { get { return dialogActive; } set { dialogActive = value; } }
-	public bool dialogActive = false;
-
-	public bool DialogEnded { get { return dialogEnded; } set { dialogEnded = value; } }
-	public bool dialogEnded = false;
-
-	//public bool OutOfRange { get { return outOfRange; } set { outOfRange = value; } }
+	bool isLetterMultiplied = false;
+	bool dialogActive = false;
+	bool dialogEnded = false;
 	public bool outOfRange = true;
 
 	[SerializeField] AudioClip audioClip;
@@ -31,10 +34,8 @@ public class DialogSystem : MonoBehaviour {
 
 	void Start() {
 		audioSource = GetComponent<AudioSource>();
-		dialogText.text = "";
-	}
-	void Update() {
-
+		dialogText.text = "";		
+		dialogGUI.SetActive(false);
 	}
 
 	public void EnterRangeOfNPC() {
@@ -59,14 +60,14 @@ public class DialogSystem : MonoBehaviour {
 		if (!outOfRange) {
 			int dialogLength = dialogLines.Length;
 			int currentDialogIndex = 0;
-			while (currentDialogIndex < dialogLength /* || !isLetterMultiplied*/) {
-				//if (!isLetterMultiplied) {
-				//	isLetterMultiplied = true;
+			while (currentDialogIndex < dialogLength  || !isLetterMultiplied) {
+				if (!isLetterMultiplied) {
+					isLetterMultiplied = true;
 					StartCoroutine(DisplayString(dialogLines[currentDialogIndex++]));
 					if(currentDialogIndex >= dialogLength) {
 						dialogEnded = true;
 					}
-				//}
+				}
 				yield return 0;
 			}
 			while(true) {
