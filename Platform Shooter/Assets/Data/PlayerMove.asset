@@ -16,11 +16,11 @@ MonoBehaviour:
     m_Bits: 512
   gravity: 2
   maxFallSpeed: 20
-  xAccel: 20
+  xAccel: 30
   xDecel: 40
-  xMaxSpeed: 10
+  xMaxSpeed: 20
   xSnapSpeed: 2
-  jumpStartSpeed: 8
+  jumpStartSpeed: 16
   jumpMaxHoldPeriod: 0.2
-  jumpMinSpeed: 6
+  jumpMinSpeed: 12
   jumpInputLeewayPeriod: 0.15

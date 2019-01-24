@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour {
 
 	[Tooltip("Target of the camera (usually player)")]
-	[SerializeField] RaycastController target;
+	[SerializeField] Controller target;
 
 	[Tooltip("Size of the leeway inside which the camera does not move when the player moves")]
 	[SerializeField] Vector2 focusAreaSize;

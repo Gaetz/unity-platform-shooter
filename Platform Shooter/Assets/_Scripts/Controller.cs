@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastController : MonoBehaviour {
+public class Controller : MonoBehaviour {
 
 	enum JumpState {
 		None = 0, Holding
