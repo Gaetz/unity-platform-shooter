@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17163724d3b8a9442bf95afb0e670e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogAbovePosition: 60
+  dialogAbovePosition: 80
   ChatBackground: {fileID: 0}
   sentences:
   - Hey hey hey!

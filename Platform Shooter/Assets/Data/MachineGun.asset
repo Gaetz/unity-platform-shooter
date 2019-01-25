@@ -11,10 +11,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c87f31a44928a4b932144ab4a54931, type: 3}
   m_Name: MachineGun
   m_EditorClassIdentifier: 
-  cooldown: 0
-  angularSpread: 0
-  projectileNumber: 0
-  projectileLifetime: 0
-  projectileSpeed: 0
-  projectileDamage: 0
-  projectileSplash: {fileID: 0}
+  cooldown: 0.05
+  defaultAngle: 0
+  angularSpread: 2
+  verticalSpread: 0
+  verticalOffset: 0
+  horizontalOffset: 0.5
+  projectileNumber: 2
+  projectileLifetime: 2
+  projectileSpeed: 600
+  projectileDamage: 1
+  gravityScale: 0
+  projectileMass: 0
