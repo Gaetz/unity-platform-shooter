@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 60901852951054950}
   - component: {fileID: 50863233298793556}
   - component: {fileID: 114945422538188738}
+  - component: {fileID: 114785650742699180}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Untagged
@@ -38,8 +39,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1257913392874706}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.23, y: -0.57, z: 0}
-  m_LocalScale: {x: 0.5, y: 1, z: 1}
+  m_LocalPosition: {x: 33.35, y: 3.73, z: 0}
+  m_LocalScale: {x: 0.98, y: 1.63, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -141,6 +142,18 @@ PolygonCollider2D:
       - {x: -0.2938926, y: -0.40450853}
       - {x: 0.29389268, y: -0.40450847}
       - {x: 0.47552824, y: 0.15450856}
+--- !u!114 &114785650742699180
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1257913392874706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d2d2950be18ed54aac8448bd131b2e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 20
 --- !u!114 &114945422538188738
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -152,4 +165,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca0e06e6f553e5f4fa51a9f2ca210159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.01
+  speed: 0.5
