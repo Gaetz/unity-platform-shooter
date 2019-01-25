@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 50584478223404142}
   - component: {fileID: 95739147701147802}
   - component: {fileID: 114537318366638536}
+  - component: {fileID: 114753311834059090}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -38,7 +39,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1331485250133708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 5.5, z: 0}
+  m_LocalPosition: {x: 24.5, y: 3.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -122,6 +123,21 @@ MonoBehaviour:
   jumpSfx: {fileID: 0}
   landSfx: {fileID: 0}
   startMoveSfx: {fileID: 0}
+--- !u!114 &114753311834059090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1331485250133708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d12bd4d51290f1429e4749e95b138eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 114770542547797750, guid: 8cd34dc2ebee7e14490520387f4d89c7,
+    type: 2}
+  weaponData: {fileID: 11400000, guid: 75eb5ee712f97be469794e51832436bf, type: 2}
+  shooter: 0
 --- !u!212 &212806509148937192
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -9,7 +9,7 @@ public class DataAccess {
 	EngineMoveData engineMoveData;
 
 	public void Load() {
-		engineMoveData = AssetDatabase.LoadAssetAtPath("Assets/Data/EngineMoveData.asset", typeof(EngineMoveData)) as EngineMoveData;
+		engineMoveData = AssetDatabase.LoadAssetAtPath("Assets/Data/Move/EngineMoveData.asset", typeof(EngineMoveData)) as EngineMoveData;
 	}
 
 	// Singleton

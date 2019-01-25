@@ -8,6 +8,7 @@ public class Projectile : MonoBehaviour {
 		float speed;
 		float lifetime;
 		int damage;
+		Shooter shooter;
 
 		float lifeCounter;
 
@@ -22,18 +23,19 @@ public class Projectile : MonoBehaviour {
 		particles.Stop();
 	}
 
-	public void Setup(float angle, float speed, float lifetime, int damage, float gravityScale, float mass) {
+	public void Setup(float angle, float speed, float lifetime, int damage, float gravityScale, float mass, Shooter shooter) {
 		this.angle = angle;
 		this.speed = speed;
 		this.lifetime = lifetime;
 		this.damage = damage;
-		if(lifetime > 0)
-			Destroy(gameObject, lifetime);
+		this.shooter = shooter;
 		if(gravityScale > 0) {
 			rb.gravityScale = gravityScale;
 			rb.mass = mass;
 			rb.AddForce(new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * speed);
 		}
+		if(lifetime > 0)
+			Destroy(gameObject, lifetime);
 	}
 
 	void Update() {
@@ -42,7 +44,13 @@ public class Projectile : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D other) {
+	void OnTriggerEnter2D(Collider2D other) {
+		if(shooter == Shooter.Player && other.gameObject.tag == "Player") {
+			return;
+		}
+		if(shooter == Shooter.Enemy && other.gameObject.tag == "Enemy") {
+			return;
+		}
 		if(other.gameObject.layer != gameObject.layer) {
 			particles.Play();
 			spriteRenderer.enabled = false;

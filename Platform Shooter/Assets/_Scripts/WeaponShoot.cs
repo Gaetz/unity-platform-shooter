@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Shooter { Player, Enemy };
+
 public class WeaponShoot : MonoBehaviour {
 
 	[SerializeField] Projectile projectile;
   [SerializeField] WeaponData weaponData;
+	[SerializeField] Shooter shooter;
 
 	float cooldownCounter;
 
@@ -25,7 +28,7 @@ public class WeaponShoot : MonoBehaviour {
 				projectilePosition.y += Random.Range(-weaponData.verticalSpread, weaponData.verticalSpread);
 				Projectile p = Instantiate(projectile, projectilePosition, Quaternion.identity);
 				float angle = weaponData.defaultAngle + Random.Range(-weaponData.angularSpread, weaponData.angularSpread);
-				p.Setup(angle, weaponData.projectileSpeed, weaponData.projectileLifetime, weaponData.projectileDamage, weaponData.gravityScale, weaponData.projectileMass);
+				p.Setup(angle, weaponData.projectileSpeed, weaponData.projectileLifetime, weaponData.projectileDamage, weaponData.gravityScale, weaponData.projectileMass, shooter);
 			}
 			cooldownCounter = 0;
 		}
