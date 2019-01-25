@@ -17,8 +17,8 @@ TagManager:
   - PostProcessing
   - Platforms
   - Player
-  - 
-  - 
+  - PlayerProjectiles
+  - EnemyProjectiles
   - 
   - 
   - 
